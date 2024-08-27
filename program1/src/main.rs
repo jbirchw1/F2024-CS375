@@ -20,7 +20,7 @@ fn lines_from_file(filename: impl AsRef<Path>) -> Vec<String> {
 fn convert_and_parse_input(strings: Vec<String>) -> (Vec<i32>, Vec<i32>) {
     let array_size = match strings[0].trim().parse::<i32>() {
         Ok(num) => {
-            println!("Read size: {}", num);
+            // println!("Read size: {}", num);
             num
         },
         Err(_) => {
@@ -40,7 +40,7 @@ fn convert_and_parse_input(strings: Vec<String>) -> (Vec<i32>, Vec<i32>) {
 
     let query_size = match strings[(array_size + 1) as usize].trim().parse::<i32>() {
         Ok(num) => {
-            println!("Read query size: {}", num);
+            // println!("Read query size: {}", num);
             num
         },
         Err(_) => {
@@ -62,8 +62,25 @@ fn convert_and_parse_input(strings: Vec<String>) -> (Vec<i32>, Vec<i32>) {
     (sorted_numbers, queries)
 }
 
-fn search_for_int(filename: impl AsRef<Path>, query: i32) -> () {
+// !! This is the binary search algorithm
+fn binary_search(array: &Vec<i32>, length: usize, target: i32) -> () {
+    let mut start_index = 0;
+    let mut end_index = length - 1;
     
+    while start_index <= end_index {
+        let midpoint:usize = (start_index + end_index) / 2;
+        if target == array[midpoint] {
+            println!("{}", midpoint);
+            return
+        }
+        else if target < array[midpoint] {
+            end_index = midpoint - 1;
+        }
+        else if target > array[midpoint] {
+            start_index = midpoint + 1;
+        }
+    }
+    println!("Not Found")
 }
 
 fn main() {
@@ -78,14 +95,8 @@ fn main() {
     let raw_input = lines_from_file(file_path);
     let (sorted_numbers, queries) = convert_and_parse_input(raw_input);
 
-    println!("Numbers:");
-    for number in sorted_numbers.iter() {
-        println!("{}", number);
+    for target in queries.iter() {
+        binary_search(&sorted_numbers, sorted_numbers.len().try_into().unwrap(), *target);
     }
-    println!("Queries:");
-    for query in queries.iter() {
-        println!("{}", query);
-    }
-
 
 }
