@@ -1,3 +1,8 @@
+/**
+ * John Birchwood
+ * Program 1 - Binary Search
+ */
+
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -93,7 +98,7 @@ fn binary_search(array: &Vec<i32>, length: usize, target: i32) -> () {
         }
     }
     // if the while loop is ever exited, the target was not found
-    println!("Not Found")
+    println!("Not found")
 }
 
 fn main() {
@@ -103,7 +108,6 @@ fn main() {
     // Set the input filepath to the value of the first command line argument
     // * NOTE: The first command line (or the 0th) is the path to the executable, consistent w/ C
     // behavior 
-    // TODO: Change these names
     let file_path = &args[1];
     let raw_input = lines_from_file(file_path);
     let (sorted_numbers, queries) = convert_and_parse_input(raw_input);
