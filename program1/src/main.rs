@@ -79,20 +79,25 @@ fn convert_and_parse_input(strings: Vec<String>) -> (Vec<i32>, Vec<i32>) {
     (sorted_numbers, queries)
 }
 
-// !! This is the binary search algorithm
+// !! This is the binary search algorithm !!
 fn binary_search(array: &Vec<i32>, length: usize, target: i32) -> () {
     let mut start_index = 0;
     let mut end_index = length - 1;
     
+    // If the start index ever exceeds the end index, it means the search
+    // was unsuccessful and the search terminates
     while start_index <= end_index {
-        let midpoint:usize = (start_index + end_index) / 2;
+        let midpoint:usize = (start_index + end_index) / 2; // midpoint
+        // Case midpoint equals target
         if target == array[midpoint] {
             println!("{}", midpoint);
             return // return if found
         }
+        // Case target is less than midpoint
         else if target < array[midpoint] {
             end_index = midpoint - 1;
         }
+        // Case target is greater than midpoint
         else if target > array[midpoint] {
             start_index = midpoint + 1;
         }
