@@ -3,102 +3,49 @@
  * Program 1 - Binary Search
  */
 
-use std::env;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
-use std::path::Path;
+use std::io::{self, Write, BufRead};
+
+// Macro for sending to stderr
+macro_rules! println_stderr(
+    ($($arg:tt)*) => { {
+        let r = writeln!(&mut ::std::io::stderr(), $($arg)*);
+        r.expect("failed printing to stderr");
+    } }
+);
 
 /**
- * This function reads text from the input file into a Buffered Reader
- * Although unneccessary, it will panic if the input read is not valid.
- * The output is returned from the function as a Vector of strings.
+ * Binary Search algorithm
  */
-fn lines_from_file(filename: impl AsRef<Path>) -> Vec<String> {
-    let file = File::open(filename).expect("no such file");
-    let buf = BufReader::new(file);
-    buf.lines()
-        .map(|l| l.expect("Could not parse line"))
-        .collect()
-}
-
-/**
- * This function takes the Vector of strings previously compiled and converts
- * it to usable vectors in the form of 32-bit integers.
- * It returns 2 i32 Vectors, the sorted list of numbers and the list of targets
- * to be searched for.
- */
-fn convert_and_parse_input(strings: Vec<String>) -> (Vec<i32>, Vec<i32>) {
-    // Take the first element and use it as the length of the sorted list
-    let array_size = match strings[0].trim().parse::<i32>() {
-        Ok(num) => {
-            num
-        },
-        Err(_) => {
-            eprintln!("Failed to parse the array size as i32: {}", strings[0]);
-            return (Vec::new(), Vec::new()); // Return empty vectors on error
-        }
-    };
-
-    // Create new i32 Vector with size computed above.
-    let mut sorted_numbers: Vec<i32> = Vec::with_capacity(array_size as usize);
-
-    // For each number within the range computed with the size, convert from string to int and 
-    // push to the Vector.
-    for (index, line) in strings.iter().enumerate().skip(1).take((array_size) as usize) {
-        match line.trim().parse::<i32>() {
-            Ok(num) => sorted_numbers.push(num),
-            Err(_) => eprintln!("Failed to parse integer at line {} as i32: {}", 1 + index, line),
-        }
-    }
-
-    // Take the next index after the list of sorted numbers and use that for the 
-    // number of search targets.
-    let query_size = match strings[(array_size + 1) as usize].trim().parse::<i32>() {
-        Ok(num) => {
-            num
-        },
-        Err(_) => {
-            eprintln!("Failed to parse the query size as i32: {}", strings[0]);
-            return (Vec::new(), Vec::new()) ; // Return empty vectors on error
-        }
-    };
-
-    // New Vector for the queries
-    let mut queries: Vec<i32> = Vec::with_capacity(query_size as usize);
-
-    // Skip all the elements that are not in the target vector
-    // (sorted vector size) + (vector array) + (target vector size) => sorted_vector + 2
-    for (index, line) in strings.iter().enumerate().skip((array_size + 2) as usize).take((query_size) as usize) {
-        match line.trim().parse::<i32>() {
-            Ok(num) => queries.push(num),
-            Err(_) => eprintln!("Failed to parse query at line {} as i32: {}", 1 + index, line),
-        }
-    }
-
-    // This is how you return in Rust. Unintutive for me, since I am mainly a C++ programmer.
-    (sorted_numbers, queries)
-}
-
-// !! This is the binary search algorithm !!
-fn binary_search(array: &Vec<i32>, length: usize, target: i32) -> () {
+fn binary_search(array: &Vec<String>, length: usize, target: i32) -> () {
     let mut start_index = 0;
     let mut end_index = length - 1;
     
     // If the start index ever exceeds the end index, it means the search
     // was unsuccessful and the search terminates
     while start_index <= end_index {
+        // Calculate middle of slice
         let midpoint:usize = (start_index + end_index) / 2; // midpoint
+        // Convert the string received from stdin to an i32. This is done here so we only run that 
+        // conversion from string to i32 is only done for values we are checking, as opposed to 
+        // converting the whole array first (O(n)) then iterating through it.
+        let value_at_midpoint = match array[midpoint].parse::<i32>() {
+            Ok(val) => val,
+            Err(e) => {
+                println_stderr!("Unable to parse size from argument: {}", e);
+                return;
+            }
+        };
         // Case midpoint equals target
-        if target == array[midpoint] {
+        if target == value_at_midpoint {
             println!("{}", midpoint);
             return // return if found
         }
         // Case target is less than midpoint
-        else if target < array[midpoint] {
+        else if target < value_at_midpoint {
             end_index = midpoint - 1;
         }
         // Case target is greater than midpoint
-        else if target > array[midpoint] {
+        else if target > value_at_midpoint {
             start_index = midpoint + 1;
         }
     }
@@ -107,21 +54,70 @@ fn binary_search(array: &Vec<i32>, length: usize, target: i32) -> () {
 }
 
 fn main() {
-    // Get arguments
-    let args: Vec<String> = env::args().collect();
+    // Initialize an empty, mutable vector to store the input in
+    let mut args: Vec<String> = vec![];
 
-    // Set the input filepath to the value of the first command line argument
-    // * NOTE: The first command line (or the 0th) is the path to the executable, consistent w/ C
-    // behavior 
-    let file_path = &args[1];
-    let raw_input = lines_from_file(file_path);
-    let (sorted_numbers, queries) = convert_and_parse_input(raw_input);
+    // Get input from standard in
+    let stdin = io::stdin();
+    for line in stdin.lock().lines() {
+        let line = line.expect("Could not read line from standard in");
+        args.push(line);
+    }
 
-    // Search for each target
-    for target in queries.iter() {
-        // ! Must use a copy (& notation) to pass by value
-        // Also, need to dereference target value
-        binary_search(&sorted_numbers, sorted_numbers.len().try_into().unwrap(), *target);
+    // length of the sorted array
+    let string_len_sorted_array = &args[0];
+
+    // Rust type/null checking is tricky. It all requires this "Ok:Err" funky syntax
+    let sorted_size = match string_len_sorted_array.parse::<usize>() {
+        Ok(val) => val,
+        Err(e) => {
+            println_stderr!("Unable to parse size from argument: {}", e);
+            return;
+        }
+    };
+
+    // make sure there are as many following numbers as the first line suggested, requires this funky "Some/None" syntax
+    let _arg = match args.get(sorted_size + 1) {
+        Some(val) => val,
+        None => {
+            println_stderr!("First number does not match size of file.");
+            return;
+        }
+    };
+
+    // Size of query array
+    let string_query_size = &args[sorted_size + 1];
+
+    
+    let query_size = match string_query_size.parse::<usize>() {
+        Ok(val) => val,
+        Err(e) => {
+            println_stderr!("Unable to parse size from argument: {}", e);
+            return;
+        }
+    };
+
+    // Make sure there are as many following targets as the size suggested
+    let _arg_2 = match args.get(sorted_size + query_size) {
+        Some(val) => val,
+        None => {
+            println_stderr!("Number of queries inconsistent with file size.");
+            return;
+        }
+    };
+
+    let query_start_index = sorted_size + 2;
+
+    // run binary search for each target
+    for str_target in &args[query_start_index..query_start_index+query_size] {
+        let target = match str_target.parse::<i32>() {
+            Ok(val) => val,
+            Err(e) => {
+                println_stderr!("Unable to parse size from argument: {}", e);
+                return;
+            }
+        };
+        binary_search(&args[1..sorted_size+2].to_vec(), sorted_size, target);
     }
 
 }
