@@ -6,11 +6,12 @@ while test $# -gt 0; do
             echo "Program to generate data and run it through program 2, Merge Sort"
             echo " "
             echo "arguments:"
-            echo "-l | --length [len]       length of data to be generated, as an int"
+            echo "-l | --length [len]           length of data to be generated, as an int"
             echo " "
             echo "options:"
-            echo "-c | --cleanup            remove all .txt files once done"
-            echo "-h | --help               display brief overview"
+            echo "-c | --cleanup                remove all .txt files once done"
+            echo "-h | --help                   display brief overview"
+            echo "-i | --indices [start] [end]  specify start and end indices to print"
             exit 0
             ;;
         -l | --length)
