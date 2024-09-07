@@ -47,10 +47,10 @@ make all
 # pipe into rust program
 if [[ $INDEXED == "true" ]]; then 
     export SORTED_FILENAME="sorted$LEN-$START-$END.txt"
-    ./target/debug/program2 $START $END < $FILENAME > $SORTED_FILENAME
+    ./../target/debug/program2 $START $END < $FILENAME > $SORTED_FILENAME
 else 
     export SORTED_FILENAME="sorted$LEN.txt"
-    ./target/debug/program2 < $FILENAME > $SORTED_FILENAME
+    ./../target/debug/program2 < $FILENAME > $SORTED_FILENAME
 fi
 
 # cleanup
