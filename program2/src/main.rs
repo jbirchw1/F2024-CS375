@@ -10,6 +10,15 @@ use std::io::{self, BufRead};
 // imports the mergesort.rs file for use in main.rs
 mod mergesort;
 
+/**
+ * This function takes no parameters and returns the start output index, the end output index, 
+ * and the unsorted input data gathered from stdin.
+ * Returns the entire unsorted input array in the form of an i32 vector
+ * and returns the indices as uints of type usize, useful for automatic
+ * error checking and type safety. 
+ * If no index arguments are provided on the command line, the function
+ * will assign them to the start and end of the input (max size).
+ */
 fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
     // In rust, command line arguments can be collected from std::env,
     // while input provided via file redirection is collected from stdin
@@ -33,7 +42,7 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
 
     // handles errors in command line input and appropriately assigns start and end indices for printing
     if args.len() == 1 {
-        println!("Error: Not enough indices entered. Provide either 0 (prints entire array) or 2 [start, end).");
+        println!("ID-10-t Error: Not enough indices entered. Provide either 0 (prints entire array) or 2 [start, end).");
     }
     else if args.len() == 2 { // case in which the user wishes to output only the items between two vertices
         start = match args[0].parse::<usize>() {
@@ -73,6 +82,12 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
     (start, end, unsorted_array)
 }
 
+/**
+ * This function takes the start index as type usize, end index as
+ * type usize, and sorted array as type Vec<i32>. Returns void
+ * Prints the size of the sorted (im)proper subset and following
+ * subset of sorted data.
+ */
 fn print_array(start: usize, end: usize, array: Vec<i32>) {
     // Print array
     let subset_eq_size = end - start; // size of output
@@ -82,11 +97,12 @@ fn print_array(start: usize, end: usize, array: Vec<i32>) {
     }
 }
 
+// driver code
 fn main() {
     // get input
     let (start_print_index, end_print_index, unsorted_array) = collect_and_parse_input();
 
-    // sort array
+    // sort array (see mergesort.rs)
     let sorted_array = mergesort::sort(unsorted_array);
 
     // print
