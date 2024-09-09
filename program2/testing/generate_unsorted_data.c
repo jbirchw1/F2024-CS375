@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
     if(argc > 2) {
-        printf("PEBKAC: Too many arguments (%d) provided.\n", argc);
+        printf("ID-10-t Error: Too many arguments (%d) provided.\n", argc);
         return 1;
     }
 

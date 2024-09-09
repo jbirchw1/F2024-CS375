@@ -7,6 +7,9 @@
 use std::env;
 use std::io::{self, BufRead};
 
+// imports the mergesort.rs file for use in main.rs
+mod mergesort;
+
 fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
     // In rust, command line arguments can be collected from std::env,
     // while input provided via file redirection is collected from stdin
@@ -23,7 +26,7 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
     // Important: must read in size of unsorted array here in order to return appropriate 
     // ending index in the event there are no command line arguments provided
     let stdin = io::stdin();
-    let unsorted_array: Vec<i32> = stdin.lock().lines()
+    let unsorted_array: Vec<i32> = stdin.lock().lines().skip(1)
         .filter_map(|line| line.ok())   // filter out any lines that couldn't be read
         .filter_map(|line| line.trim().parse().ok())  // convert each line to an i32
         .collect();
@@ -48,18 +51,17 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
             }
         };
         // User error checking
-        // FIY: PEBKAC => Problem Exists Between Keyboard And Chair
         if start > unsorted_array.len() {
-            println!("PEBKAC: starting index {} out of bounds.", start);
+            println!("ID-10-t Error: starting index {} out of bounds.", start);
             std::process::exit(0);
         }
         else if end > unsorted_array.len() {
-            println!("PEBKAC: ending index {} out of bounds.", end);
+            println!("ID-10-t Error: ending index {} out of bounds.", end);
             std::process::exit(0);
         }
     }
     else if args.len() > 2 {
-        println!("PEBKAC: Too many indices entered. Provide either 0 (prints entire array) or 2 [start, end).");
+        println!("ID-10-t Error: Too many indices entered. Provide either 0 (prints entire array) or 2 [start, end).");
         std::process::exit(0);
     }
     else { // case in which no input was provided => print entire array
@@ -71,15 +73,10 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
     (start, end, unsorted_array)
 }
 
-fn mergesort(mut unsorted_array: Vec<i32>) -> Vec<i32> {
-    // TODO: merge sort
-    // Yes I know this will fail me
-    unsorted_array.sort();
-    unsorted_array
-}
-
 fn print_array(start: usize, end: usize, array: Vec<i32>) {
     // Print array
+    let subset_eq_size = end - start; // size of output
+    println!("{}", subset_eq_size);
     for each_integer in &array[start..end] {
         println!("{}", each_integer);
     }
@@ -90,7 +87,7 @@ fn main() {
     let (start_print_index, end_print_index, unsorted_array) = collect_and_parse_input();
 
     // sort array
-    let sorted_array = mergesort(unsorted_array);
+    let sorted_array = mergesort::sort(unsorted_array);
 
     // print
     print_array(start_print_index, end_print_index, sorted_array);
