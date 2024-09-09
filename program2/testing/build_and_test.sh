@@ -12,6 +12,7 @@ while test $# -gt 0; do
             echo "-c | --cleanup                remove all .txt files once done"
             echo "-h | --help                   display brief overview"
             echo "-i | --indices [start] [end]  specify start and end indices to print"
+            echo "-t | --test                   run control program and diff against known correct solution"
             exit 0
             ;;
         -l | --length)
@@ -19,15 +20,18 @@ while test $# -gt 0; do
             LEN=$1
             ;;
         -i | --indices)
-            INDEXED=true;
+            INDEXED=true
             shift
             START=$1
             shift
             END=$1
             ;;
         -c | --cleanup)
-            rm *.txt
+            rm *.txt control
             exit 0
+            ;;
+        -t | --test)
+            TEST=true
             ;;
         *)
             break
@@ -53,6 +57,21 @@ else
     ./../target/debug/program2 < $FILENAME > $SORTED_FILENAME
 fi
 
-# cleanup
+if [[ $TEST == "true" ]]; then
+    rustc control.rs
+    export CONTROL_SORTED_FILENAME="CONTROL-sorted$LEN-$START-$END.txt"
+    if [[ $INDEXED == "true" ]]; then 
+        ./control $START $END < $FILENAME > $CONTROL_SORTED_FILENAME
+    else 
+        ./control < $FILENAME > $CONTROL_SORTED_FILENAME
+    fi
+    if diff $CONTROL_SORTED_FILENAME $SORTED_FILENAME ; then 
+        echo "Files match. Hooray!"
+    else 
+        echo "Files do not match. Check sorting code."
+    fi
+fi
+
+# basic cleanup
 make clean
 cargo clean
