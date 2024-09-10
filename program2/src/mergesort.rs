@@ -26,8 +26,7 @@ pub fn sort(unsorted_array: Vec<i32>) -> Vec<i32> {
     let sorted_right_array = sort(unsorted_right_array);
 
     // merge sorted array and return sorted merged vector
-    let sorted_merged_array = merge(sorted_left_array, sorted_right_array);
-    return sorted_merged_array;
+    merge(sorted_left_array, sorted_right_array)
 }
 
 /**
@@ -65,5 +64,5 @@ fn merge(left_array: Vec<i32>, right_array: Vec<i32>) -> Vec<i32> {
         }
     }
 
-    return result_vector;
+    result_vector
 }
