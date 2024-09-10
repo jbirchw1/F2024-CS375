@@ -3,7 +3,6 @@
  * jbirchw1@binghamton.edu
  * Program 2 - Merge Sort
  */
-
 use std::env;
 use std::io::{self, BufRead};
 
@@ -11,11 +10,11 @@ use std::io::{self, BufRead};
 mod mergesort;
 
 /**
- * This function takes no parameters and returns the start output index, the end output index, 
+ * This function takes no parameters and returns the start output index, the end output index,
  * and the unsorted input data gathered from stdin.
  * Returns the entire unsorted input array in the form of an i32 vector
  * and returns the indices as uints of type usize, useful for automatic
- * error checking and type safety. 
+ * error checking and type safety.
  * If no index arguments are provided on the command line, the function
  * will assign them to the start and end of the input (max size).
  */
@@ -32,19 +31,22 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
     let mut end: usize = 1;
 
     // Read integers from stdin
-    // Important: must read in size of unsorted array here in order to return appropriate 
+    // Important: must read in size of unsorted array here in order to return appropriate
     // ending index in the event there are no command line arguments provided
     let stdin = io::stdin();
-    let unsorted_array: Vec<i32> = stdin.lock().lines().skip(1)
-        .filter_map(|line| line.ok())   // filter out any lines that couldn't be read
-        .filter_map(|line| line.trim().parse().ok())  // convert each line to an i32
+    let unsorted_array: Vec<i32> = stdin
+        .lock()
+        .lines()
+        .skip(1)
+        .filter_map(|line| line.ok()) // filter out any lines that couldn't be read
+        .filter_map(|line| line.trim().parse().ok()) // convert each line to an i32
         .collect();
 
     // handles errors in command line input and appropriately assigns start and end indices for printing
     if args.len() == 1 {
         println!("ID-10-t Error: Not enough indices entered. Provide either 0 (prints entire array) or 2 [start, end).");
-    }
-    else if args.len() == 2 { // case in which the user wishes to output only the items between two vertices
+    } else if args.len() == 2 {
+        // case in which the user wishes to output only the items between two vertices
         start = match args[0].parse::<usize>() {
             Ok(val) => val,
             Err(e) => {
@@ -63,17 +65,15 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
         if start > unsorted_array.len() {
             println!("ID-10-t Error: starting index {} out of bounds.", start);
             std::process::exit(0);
-        }
-        else if end > unsorted_array.len() {
+        } else if end > unsorted_array.len() {
             println!("ID-10-t Error: ending index {} out of bounds.", end);
             std::process::exit(0);
         }
-    }
-    else if args.len() > 2 {
+    } else if args.len() > 2 {
         println!("ID-10-t Error: Too many indices entered. Provide either 0 (prints entire array) or 2 [start, end).");
         std::process::exit(0);
-    }
-    else { // case in which no input was provided => print entire array
+    } else {
+        // case in which no input was provided => print entire array
         start = 0;
         end = unsorted_array.len();
     }
