@@ -4,14 +4,15 @@
  * Program 3 - Heap Sort
  */
 
- /**
-  * TODO: Include comments on time complexity
-  * * Or, check README.md
-  */
+/**
+ * TODO: Include comments on time complexity
+ * * Or, check README.md
+ */
 
 // imports heap module (see heap/mod.rs)
 mod heap;
 
+// Required libraries for input parsing
 use std::env;
 use std::io::{self, BufRead};
 
@@ -88,6 +89,7 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
     (start, end, unsorted_array)
 }
 
+// Standard printing array function
 fn print_array(start: usize, end: usize, array: Vec<i32>) {
     // print size
     let subset_eq_size = end - start; // size of output

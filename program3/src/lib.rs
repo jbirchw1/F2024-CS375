@@ -11,6 +11,7 @@
 // that's no fun, is it?
 mod merge;
 mod heap;
+mod gendata;
 
 pub fn mergesort(arr: Vec<i32>) {
     merge::sort(arr);
@@ -18,4 +19,8 @@ pub fn mergesort(arr: Vec<i32>) {
 
 pub fn heapsort(arr: Vec<i32>) {
     heap::sort(arr); 
+}
+
+pub fn gendata(n: i32) -> Vec<i32> {
+    gendata::generate_random_list(n)
 }
