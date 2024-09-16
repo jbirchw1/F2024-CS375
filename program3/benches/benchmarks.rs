@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use program3::{mergesort, heapsort, gendata};
+use program3::{gendata, heapsort, mergesort};
 
 fn mergesort_benchmark(c: &mut Criterion) {
     c.bench_function("mergesort", |b| b.iter(|| mergesort(gendata(10000))));

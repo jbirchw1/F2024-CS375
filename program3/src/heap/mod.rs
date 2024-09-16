@@ -1,39 +1,51 @@
-// mod gendata;
+fn print_heap_tree(heap: Vec<i32>, index: usize, prefix: String, is_left: bool) {
+    if index >= heap.len() {
+        return;
+    }
 
-// under construction
-// fn print_binary_tree(array : &Vec<i32>) {
-//     let p2 = array.len().next_power_of_two();
-//     let height = (p2 as f32).log2().ceil() as i32;
-//     let mut curr : usize = 0;
-//     let base : u32 = 2;
-//     let max_length : i32 = height * 2 + 1;
-//     for i in 1..height+1 {
-//         let length : i32 = max_length / (2 * i);
-//         let empty_spaces = (0..length).map(|_| "-").collect::<String>();
-//         if i % 2 == 1 {
-//             let j = 0;
-//             while (j < base.pow(i.try_into().unwrap())) && (curr < array.len()) {
-//                 print!("{}{}", empty_spaces, array[curr]);
-//                 curr += 1;
-//             }
-//             println!("{}", empty_spaces);
-//         }
-//         else {
-//             let j = 0;
-//             while (j < base.pow(i.try_into().unwrap())) && (curr < array.len()) {
-//                 print!("{}{}", array[curr], empty_spaces);
-//                 curr += 1;
-//             }
-//             println!("{}", array[curr]);
-//             curr += 1;
-//         }
-//     }
-// }
+    // Print the current node with the correct branch ("├──" or "└──")
+    if index == 0 {
+        println!(
+            "{}\x1b[38;2;0;0;255m{}\x1b[38;2;255;255;255m",
+            prefix, heap[index]
+        );
+    } else if (2 * index + 2) > heap.len() {
+        println!(
+            "{}{}\x1b[38;2;0;0;255m{}\x1b[38;2;255;255;255m",
+            prefix,
+            if is_left { "└── " } else { "├── " },
+            heap[index]
+        );
+    } else {
+        println!(
+            "{}├── \x1b[38;2;0;0;255m{}\x1b[38;2;255;255;255m",
+            prefix, heap[index]
+        );
+    }
+
+    // Prepare prefix for child branches
+    let mut child_prefix = format!("{}│   ", prefix);
+    if index == 0 {
+        child_prefix = String::new();
+    }
+
+    // Recursively print left and right children
+    let left_child = 2 * index + 1;
+    let right_child = 2 * index + 2;
+
+    if right_child < heap.len() {
+        print_heap_tree(heap.clone(), right_child, child_prefix.clone(), false);
+    }
+    if left_child < heap.len() {
+        print_heap_tree(heap, left_child, child_prefix, true);
+    }
+}
 
 fn percolate_down(mut index: usize, mut heap: Vec<i32>) -> Vec<i32> {
     let length = heap.len();
 
-    while 2 * index + 1 < length { // While left child exists
+    while 2 * index + 1 < length {
+        // While left child exists
         let left = 2 * index + 1;
         let right = 2 * index + 2;
         let mut curr_smallest = index;
@@ -58,32 +70,33 @@ fn percolate_down(mut index: usize, mut heap: Vec<i32>) -> Vec<i32> {
 
 fn extract_min(mut heap: Vec<i32>) -> (i32, Vec<i32>) {
     if heap.is_empty() {
-        panic!("cannot extract minimum from empty heap");
+        panic!("Error ID-10-t: cannot extract minimum from empty heap");
     }
-    
+
     let minimum = heap[0];
-    
+
     if heap.len() == 1 {
-        heap.pop(); 
+        heap.pop();
         return (minimum, heap);
     }
-    
+
     let last_index = heap.len() - 1;
     let last_element = heap[last_index];
     heap[0] = last_element;
-    heap.pop(); 
-    
+    heap.pop();
+
     let resized_heap = percolate_down(0, heap);
-    
+
     (minimum, resized_heap)
 }
 
-fn heapify(mut heap : Vec<i32>) -> Vec<i32> {
-    let mut index : i32 = (heap.len() / 2 - 1).try_into().unwrap();
+fn heapify(mut heap: Vec<i32>) -> Vec<i32> {
+    let mut index: i32 = (heap.len() / 2 - 1).try_into().unwrap();
     while index >= 0 {
         heap = percolate_down(index.try_into().unwrap(), heap);
         index -= 1;
     }
+    print_heap_tree(heap.clone(), 0, String::new(), false);
     heap
 }
 
@@ -94,15 +107,13 @@ pub fn build_min_heap(unsorted_heap: Vec<i32>) -> Vec<i32> {
 pub fn sort(unsorted_array: Vec<i32>) -> Vec<i32> {
     let mut sorted_list: Vec<i32> = Vec::new();
     let mut min_heap = build_min_heap(unsorted_array);
-    while min_heap.len() > 0 {
-        let smallest : i32;
+    while !min_heap.is_empty() {
+        let smallest: i32;
         (smallest, min_heap) = extract_min(min_heap);
         sorted_list.push(smallest);
     }
     sorted_list
 }
-
-
 
 // Tests
 // ? Could use some better docs ?
@@ -118,7 +129,7 @@ mod tests {
         assert_eq!(result, 4);
     }
 
-    // test to determine if values will percolate down correctly 
+    // test to determine if values will percolate down correctly
     #[test]
     fn assert_percolating_down() {
         let unheap = Vec::from([10, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -132,19 +143,28 @@ mod tests {
         let unsorted_array = generate_random_list(1000000);
         let sorted_array = build_min_heap(unsorted_array);
         // println!("{:?}", sorted_array);
-        for i in 0..(sorted_array.len()/2-1) {
+        for i in 0..(sorted_array.len() / 2 - 1) {
             if (i as usize) * 2 + 1 < sorted_array.len() {
                 let left = sorted_array[(i as usize) * 2 + 1];
                 if !(sorted_array[i as usize] <= left) {
-                    panic!("{} at index {} is not less than child {} at index {}", sorted_array[i as usize], i, left, 2*i+1);
+                    panic!(
+                        "{} at index {} is not less than child {} at index {}",
+                        sorted_array[i as usize],
+                        i,
+                        left,
+                        2 * i + 1
+                    );
                 }
             }
             if (i as usize) * 2 + 2 < sorted_array.len() {
                 let right = sorted_array[(i as usize) * 2 + 2];
                 if !(sorted_array[i as usize] <= right) {
-                    panic!("{} is not less than child {}", sorted_array[i as usize], right);
+                    panic!(
+                        "{} is not less than child {}",
+                        sorted_array[i as usize], right
+                    );
                 }
-            }   
+            }
         }
     }
 
@@ -154,9 +174,12 @@ mod tests {
         let mut sorted_array = build_min_heap(generate_max_random_list(10000));
         while sorted_array.len() > 0 {
             let (alleged_minimum, remaining_heap) = extract_min(sorted_array);
-            for i in 0..remaining_heap.len() { 
+            for i in 0..remaining_heap.len() {
                 if !(remaining_heap[i] > alleged_minimum) {
-                    panic!("{} is not less than alleged minimum {}", remaining_heap[i], alleged_minimum);
+                    panic!(
+                        "{} is not less than alleged minimum {}",
+                        remaining_heap[i], alleged_minimum
+                    );
                 }
             }
             sorted_array = remaining_heap;

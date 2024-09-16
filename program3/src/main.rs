@@ -1,3 +1,4 @@
+mod gendata;
 /**
  * John Birchwood, bona fide Rustacean
  * jbirchw1@binghamton.edu
@@ -8,10 +9,8 @@
  * TODO: Include comments on time complexity
  * * Or, check README.md
  */
-
 // imports heap module (see heap/mod.rs)
 mod heap;
-mod gendata;
 
 // Required libraries for input parsing
 use std::env;
@@ -100,7 +99,7 @@ fn print_array(start: usize, end: usize, array: Vec<i32>) {
         println!("{}", each_integer);
     }
 }
- 
+
 fn main() {
     // collect and parse input
     let (start_print_index, end_print_index, unsorted_array) = collect_and_parse_input();
