@@ -11,6 +11,7 @@
 
 // imports heap module (see heap/mod.rs)
 mod heap;
+mod gendata;
 
 // Required libraries for input parsing
 use std::env;

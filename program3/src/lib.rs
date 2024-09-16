@@ -1,4 +1,6 @@
 // This file exists for purely testing purposes.
+// a lib.rs file is the crate root for library crates,
+// which is what benchmarks pull from.
 // Notice: The benchmark tests exclude the time for 
 // parsing input and printing the array, since
 // these are exactly the same for both sorts. Therefore
@@ -22,5 +24,5 @@ pub fn heapsort(arr: Vec<i32>) {
 }
 
 pub fn gendata(n: i32) -> Vec<i32> {
-    gendata::generate_random_list(n)
+    gendata::generate_max_random_list(n)
 }
