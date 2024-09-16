@@ -1,4 +1,3 @@
-mod gendata;
 /**
  * John Birchwood, bona fide Rustacean
  * jbirchw1@binghamton.edu
@@ -12,8 +11,10 @@ mod gendata;
  * heapsort: 5m1.117s
  * mergesort: 1m17.924s
  */
+
 // imports heap module (see heap/mod.rs)
 mod heap;
+mod gendata;
 
 // Required libraries for input parsing
 use std::env;
