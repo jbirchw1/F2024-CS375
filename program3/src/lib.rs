@@ -11,6 +11,7 @@
 // Of course, one could simply run the time command and
 // avoid coding all of this benchmarking business. But
 // that's no fun, is it?
+
 mod gendata;
 mod heap;
 mod merge;

@@ -8,6 +8,9 @@ mod gendata;
 /**
  * TODO: Include comments on time complexity
  * * Or, check README.md
+ * 10 million values:
+ * heapsort: 5m1.117s
+ * mergesort: 1m17.924s
  */
 // imports heap module (see heap/mod.rs)
 mod heap;

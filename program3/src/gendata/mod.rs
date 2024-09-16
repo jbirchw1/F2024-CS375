@@ -20,6 +20,10 @@ pub fn generate_random_list(n: i32) -> Vec<i32> {
     numbers
 }
 
+// similar to the previous function, but instead of
+// enumerating a list from 1 to n, it generates a random
+// number between 0 and i32 MAX for each n. Results in
+// larger, more unpredictable numbers.
 #[allow(dead_code)]
 pub fn generate_max_random_list(n: i32) -> Vec<i32> {
     let mut numbers: Vec<i32> = Vec::new();
