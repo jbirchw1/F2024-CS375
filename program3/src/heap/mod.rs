@@ -12,7 +12,10 @@ pub fn print_heap(heap: Vec<i32>) {
  * a string containing the prefix to print before the value, and a boolean
  * value determining if the value to be printed is a left or right child.
 */
-#[allow(dead_code)]
+#[allow(dead_code)] // dead code warnings are transitive, so to speak
+                    // so since this function is only called in a "dead"
+                    // function, it will also throw a warning unless
+                    // explicitly ignored.
 fn print_heap_value(heap: Vec<i32>, index: usize, prefix: String, is_left: bool) {
     // return if reached end of heap. I.e., base case.
     if index >= heap.len() {
@@ -207,7 +210,6 @@ mod tests {
     fn assert_heap() {
         let unsorted_array = generate_random_list(1000000);
         let sorted_array = build_min_heap(unsorted_array);
-        // println!("{:?}", sorted_array);
         for i in 0..(sorted_array.len() / 2 - 1) {
             if (i as usize) * 2 + 1 < sorted_array.len() {
                 let left = sorted_array[(i as usize) * 2 + 1];
