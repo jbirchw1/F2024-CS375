@@ -17,6 +17,7 @@
  *
  * Notice that heapsort is significantly slower than mergesort,
  * especially as inputs get large.
+ * The program was run on the CS dept. remote machines.
  * For more benchmarking statistics, try running `cargo bench`.
  */
 
