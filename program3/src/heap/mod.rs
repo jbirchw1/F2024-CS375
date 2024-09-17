@@ -1,3 +1,9 @@
+/**
+ * John Birchwood
+ * jbirchw1@binghamton.edu
+ * Heap sort and associated functions module
+ */
+
 // Public function to simplify interface.
 #[allow(dead_code)] // turned on since the function shouldn't be called by default.
 pub fn print_heap(heap: Vec<i32>) {
@@ -168,7 +174,7 @@ fn heapify(mut heap: Vec<i32>) -> Vec<i32> {
 // My dream is that if I ever need to expand the program to
 // max heaps as well, I'll be able to adjust heapify to
 // support both min and max heaps, and simply create another
-// public function build_max_heap().
+// public function, namely build_max_heap().
 pub fn build_min_heap(unsorted_heap: Vec<i32>) -> Vec<i32> {
     heapify(unsorted_heap)
 }
@@ -205,7 +211,7 @@ mod tests {
         assert_eq!(heap, percolate_down(0, unheap));
     }
 
-    // Test to determine if each left and right child is greater than its' parent
+    // test to determine if each left and right child is greater than its' parent
     #[test]
     fn assert_heap() {
         let unsorted_array = generate_random_list(1000000);

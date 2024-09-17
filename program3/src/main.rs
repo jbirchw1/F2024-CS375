@@ -5,16 +5,23 @@
  */
 
 /**
- * TODO: Include comments on time complexity
- * * Or, check README.md
+ * Here are the results of the timing of each program:
+ *
+ * 1 million values:
+ * heapsort: 0m26.290s
+ * mergesort: 0m6.303s
+ *
  * 10 million values:
  * heapsort: 5m1.117s
  * mergesort: 1m17.924s
+ *
+ * Notice that heapsort is significantly slower than mergesort,
+ * especially as inputs get large.
+ * For more benchmarking statistics, try running `cargo bench`.
  */
 
-// imports heap module (see heap/mod.rs)
-mod heap;
 mod gendata;
+mod heap;
 
 // Required libraries for input parsing
 use std::env;
@@ -38,8 +45,8 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
 
     // Set to 0 and 1 for initialization purposes.
     // In practice, these will virtually always be set correctly later in the program.
-    let mut start: usize = 0;
-    let mut end: usize = 1;
+    let start: usize;
+    let end: usize;
 
     // Read integers from stdin
     // Important: must read in size of unsorted array here in order to return appropriate
@@ -56,6 +63,7 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
     // handles errors in command line input and appropriately assigns start and end indices for printing
     if args.len() == 1 {
         println!("ID-10-t Error: Not enough indices entered. Provide either 0 (prints entire array) or 2 [start, end).");
+        std::process::exit(0);
     } else if args.len() == 2 {
         // case in which the user wishes to output only the items between two vertices
         start = match args[0].parse::<usize>() {
@@ -72,6 +80,7 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
                 std::process::exit(0);
             }
         };
+
         // User error checking
         if start > unsorted_array.len() {
             println!("ID-10-t Error: starting index {} out of bounds.", start);
@@ -80,16 +89,16 @@ fn collect_and_parse_input() -> (usize, usize, Vec<i32>) {
             println!("ID-10-t Error: ending index {} out of bounds.", end);
             std::process::exit(0);
         }
+
+        return (start, end, unsorted_array);
     } else if args.len() > 2 {
         println!("ID-10-t Error: Too many indices entered. Provide either 0 (prints entire array) or 2 [start, end).");
         std::process::exit(0);
-    } else {
-        // case in which no input was provided => print entire array
-        start = 0;
-        end = unsorted_array.len();
     }
+    // case in which no input was provided => print entire array
+    start = 0;
+    end = unsorted_array.len();
 
-    // return values (weird syntax, I know)
     (start, end, unsorted_array)
 }
 
