@@ -1,2 +1,11 @@
 # F2024-CS375
 Repository for John Birchwood's homework and coding problems in CS 375 - Design and Analysis of Algorithms at Binghamton University
+
+## Program 1 - Binary Search
+Program using binary search to find specified values in a sorted array
+
+## Program 2 - Merge Sort
+Program to take unsorted input and output the same values in sorted order, using merge sort.
+
+## Program 3 - Heap Sort
+Program to take unsorted input and output the same values in sorted order, using heaps. The module includes other associated heap-building functionality. 
