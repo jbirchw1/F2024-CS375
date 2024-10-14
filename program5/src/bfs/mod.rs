@@ -2,7 +2,7 @@ use std::collections::{HashMap, VecDeque};
 use std::io::{self, BufRead};
 
 /**
- * Small helper function to print each vertex and adjacency list
+ * Small debug function to print each vertex and adjacency list
  * Takes graph (hashmap) as input
  */
 pub fn print_graph(graph: &HashMap<i32, Vec<i32>>) {
