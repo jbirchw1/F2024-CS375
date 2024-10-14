@@ -31,7 +31,7 @@ fn parse_args() -> (i32, i32) {
 }
 
 fn main() {
-    let debug = true;
+    let debug = false;
 
     // create graph from input
     let graph = bfs::build_graph_from_stdin();
