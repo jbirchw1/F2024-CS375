@@ -83,7 +83,9 @@ pub fn shortest_path(
     let mut queue = priority_queue::PriorityQueue::new();
     queue.insert(4);
     queue.insert(5);
-    queue.insert_with_priority(1, 0.0); // kinda the root
+    queue.insert_with_priority(1, 1.0); // kinda the root
+    queue.decrease_key(4, 0.0);
+    let curr = queue.pop();
     let l : usize = queue.length();
     println!("Size of PQ is {}", l);
 
