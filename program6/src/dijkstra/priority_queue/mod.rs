@@ -20,7 +20,7 @@ impl Vertex {
         }
     }
 
-    pub fn new_from_value(k: i32, d: f64) -> Self {
+    pub fn new_with_priority(k: i32, d: f64) -> Self {
         Self{
             key: k,
             distance: d,
@@ -28,7 +28,6 @@ impl Vertex {
     }
 }
 
-// TODO: use impl of PriorityQueue to implement functions.
 impl PriorityQueue {
     pub fn new() -> Self {
         let vec: Vec<Vertex> = Vec::new();
@@ -43,8 +42,36 @@ impl PriorityQueue {
         self.heap.len()
     }
 
+    // Swaps indices in heap and updates lookup table
+    fn swap(&mut self, index1: usize, index2: usize) {
+        self.heap.swap(index1, index2);
+        self.lookup_table.insert(self.heap[index1].key, index1);
+        self.lookup_table.insert(self.heap[index2].key, index2);
+    }
+
     fn percolate_up(&mut self, key: i32) {
-        
+        let to_percolate = self.lookup_table.get(&key).copied().unwrap();
+        for (key, value) in &self.lookup_table {
+            println!("{}: {}", key, value);
+        }
+
+        println!("index to percolate = {}", to_percolate);
+        let mut index = to_percolate;
+        while index > 0 {
+            let parent = (index - 1) / 2;
+            println!("index now equals {}", index);
+            println!("value at index {} is {}", index, self.heap[index].key);
+            if(self.heap[index].key < self.heap[parent].key) {
+                println!("swapping");
+                self.swap(index, parent);
+            }
+            println!("value at the same index {} is now {}", index, self.heap[index].key);
+            index = parent;
+        }
+
+        for (key, value) in &self.lookup_table {
+            println!("{}: {}", key, value);
+        }
     }
 
     pub fn insert(&mut self, vertex: i32) {
@@ -52,10 +79,16 @@ impl PriorityQueue {
         // No need to percolate up, because when it is inserted into the back of the 
         // heap it has distance infinity regardless
         self.heap.push(v);
+        let index = self.heap.iter().position(|n| n.key == vertex);
+        self.lookup_table.insert(vertex, index.unwrap());
     }
 
     pub fn insert_with_priority(&mut self, vertex: i32, weight: f64) {
-        unimplemented!();
+        let v = Vertex::new_with_priority(vertex, weight);
+        self.heap.push(v);
+        let index = self.heap.iter().position(|n| n.key == vertex);
+        self.lookup_table.insert(vertex, index.unwrap());
+        self.percolate_up(vertex);
     }
 
     pub fn decrease_key(&mut self) {
