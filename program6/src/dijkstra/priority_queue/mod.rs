@@ -1,5 +1,6 @@
 // module for the priority queue
 use std::collections::{HashMap};
+use std::cmp::Ordering;
 
 pub struct Vertex {
     key: i32,
@@ -11,6 +12,26 @@ pub struct PriorityQueue {
     lookup_table: HashMap<i32, usize>,
 }
 
+// orderings so you can use `vertex1 < vertex2` or `vertex1 == vertex2`
+impl Ord for Vertex {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.distance.partial_cmp(&other.distance).unwrap_or(Ordering::Equal)
+    }
+}
+
+impl PartialOrd for Vertex {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialEq for Vertex {
+    fn eq(&self, other: &Self) -> bool {
+        self.key == other.key
+    }
+}
+
+impl Eq for Vertex { }
 
 impl Vertex {
     pub fn new(k: i32) -> Self {
@@ -25,6 +46,14 @@ impl Vertex {
             key: k,
             distance: d,
         }
+    }
+
+    pub fn get_key(&self) -> i32 {
+        self.key
+    }
+
+    pub fn get_distance(&self) -> f64 {
+        self.distance
     }
 }
 
@@ -61,25 +90,35 @@ impl PriorityQueue {
         let index = self.heap.iter().position(|n| n.key == vertex);
         self.lookup_table.insert(vertex, index.unwrap());
         self.percolate_up(vertex);
+
+        println!("Exited IWP");
     }
 
     // Updates specified key with new distance and percolates up accordingly
-    pub fn decrease_key(&mut self, key: i32, new_distance: f64) {
-        let to_percolate = self.lookup_table.get(&key).copied().unwrap();
-        self.heap[to_percolate].distance = new_distance;
-        self.percolate_up(key);
+    pub fn relax(&mut self, key: i32, new_distance: f64) {
+        let to_percolate = self.lookup_table.get(&key).copied();
+        if let Some(v) = to_percolate {
+            self.heap[v].distance = new_distance;
+            self.percolate_up(key);
+        }
+        else { return; }       
     } 
 
-    pub fn pop(&mut self) -> Vertex {
+    pub fn pop(&mut self) -> Option<Vertex> {
         // panic if heap is empty
         if !(self.length() > 0) {
-            panic!("Trying to remove smallest from empty priority queue");
+            return None;
         }
+
         // swap with last element
         self.swap(0, self.length() - 1);
 
         let smallest = self.heap.pop().unwrap();
         let _option = self.lookup_table.remove(&smallest.key);
+
+        if self.length() == 0 {
+            return Some(smallest);
+        } // otherwise there is reason to sift and it will not panic
         
         // sift down
         self.sift_down(0);
@@ -88,7 +127,7 @@ impl PriorityQueue {
             println!("{}: {}", key, value);
         }
 
-        smallest
+        Some(smallest)
     }
 
     // Swaps indices in heap and updates lookup table
@@ -111,7 +150,7 @@ impl PriorityQueue {
             let parent = (index - 1) / 2;
             println!("index now equals {}", index);
             println!("value at index {} is {}", index, self.heap[index].key);
-            if (self.heap[index].distance < self.heap[parent].distance) {
+            if self.heap[index].distance < self.heap[parent].distance {
                 println!("swapping");
                 self.swap(index, parent);
             }
@@ -122,12 +161,14 @@ impl PriorityQueue {
         for (key, value) in &self.lookup_table {
             println!("{}: {}", key, value);
         }
+
+        println!("Exited percolate up");
     }
 
     fn sift_down(&mut self, mut index: usize) {
         let to_sift = self.heap[index].key;
         println!("value to sift = {} at index {}", to_sift, index);
-        while ((index * 2) + 1) <= self.length() {
+        while ((index * 2) + 1) <= self.length() - 1 {
             let left = (2 * index) + 1;
             let right = (2 * index) + 2;
             let mut smaller = index;
