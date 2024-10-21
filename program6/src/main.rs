@@ -3,9 +3,12 @@
  * jbirchw1@binghamton.edu
  * Program 5 - Breadth First Search
  */
+
 use std::env;
 
 mod dijkstra;
+
+// TODO: heap, indices of vertices in hashmap, adjust BFS, make helper function to
 
 /**
  * Function to get the start and end vertices from the command line
@@ -38,5 +41,5 @@ fn main() {
     let (start, end) = parse_args();
     let my_graph = dijkstra::build_graph_from_stdin();
     dijkstra::print_graph(&my_graph);
-    dijkstra::shortest_path();
+    dijkstra::shortest_path(start, end, &my_graph);
 }
