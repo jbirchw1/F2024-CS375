@@ -35,29 +35,23 @@ pub fn build_graph_from_stdin() -> HashMap<i32, Vec<(i32, f64)>> {
     graph // Return ownership of the graph
 }
 
-pub fn shortest_path(
+pub fn print_shortest_path(
     start: i32,
     destination: i32,
-    graph: &HashMap<i32, Vec<(i32, f64)>>,
-) -> Option<i32> {
-     
-    // // ! testing 
-    // let mut queue = priority_queue::PriorityQueue::new();
-    // queue.insert(4);
-    // queue.insert(5);
-    // queue.insert_with_priority(1, 1.0); // kinda the root
-    // queue.relax(4, 0.0);
-    // let curr = queue.pop();
-    // let l : usize = queue.length();
-    // println!("Size of PQ is {}", l);
+    graph: &HashMap<i32, Vec<(i32, f64)>>) 
+{
 
     let (distances, predecessors) = dijkstra(graph, start);
 
-    for (key, value) in &distances {
-        println!("{}: {}", key, value);
+    if distances.get(&destination).copied().unwrap_or(f64::INFINITY) == f64::INFINITY {
+        println!("not connected");
+        return;
     }
 
-    None
+    let mut stack = Vec::new();
+    stack.push_back(destination);
+    
+
 }
 
 fn dijkstra(
@@ -74,7 +68,7 @@ fn dijkstra(
 
     // Initialize distances to infinity and start node to 0
     for &vertex in graph.keys() {
-        println!("vertex = {}", &vertex);
+        // println!("vertex = {}", &vertex);
         distances.insert(vertex, f64::INFINITY);
         pq.insert_with_priority(vertex, f64::INFINITY);
         // little hack-y, but allows you to add nodes that aren't nececcarily "u" in a directed edge
@@ -87,30 +81,36 @@ fn dijkstra(
 
     }
     distances.insert(start, 0.0);
-    for d in &distances {
-        println!("{:?}", d);
-    }
+
+    // for d in &distances {
+    //     println!("{:?}", d);
+    // }
 
     pq.insert_with_priority(start, 0.0);  // Start node with distance 0
 
     while let Some(current) = pq.pop() {
         if let Some(neighbors) = graph.get(&current.get_key()) {
             for &neighbor in neighbors {
-                println!("current access vertex = {}; neighbor = {:?}", current.get_key(), neighbor);
-                if distances.get(&neighbor.0).copied().unwrap() > &current.get_distance() + &neighbor.1 {
+                // println!("current access vertex = {}; neighbor = {:?}", current.get_key(), neighbor);
+                if distances.get(&neighbor.0).copied().unwrap() > current.get_distance() + &neighbor.1 {
                     let prior = distances.get(&neighbor.0).copied().unwrap();
                     let post = &current.get_distance() + &neighbor.1;
 
-                    println!("{} is less than {}", post, prior);
+                    // println!("{} is less than {}", post, prior);
 
                     distances.insert(neighbor.0, post);
                     predecessors.insert(neighbor.0, current.get_key());
-                    pq.relax(neighbor.0, post);
+                    if pq.contains_key(neighbor.0) {
+                        pq.relax(neighbor.0, post);
+                    }
+                    else {
+                        pq.insert_with_priority(neighbor.0, post);
+                    }
+                    
                 }
             }
         }
     }
-
 
     (distances, predecessors)
 }

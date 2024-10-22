@@ -40,6 +40,5 @@ fn parse_args() -> (i32, i32) {
 fn main() {
     let (start, end) = parse_args();
     let my_graph = dijkstra::build_graph_from_stdin();
-    dijkstra::print_graph(&my_graph);
-    dijkstra::shortest_path(start, end, &my_graph);
+    dijkstra::print_shortest_path(start, end, &my_graph);
 }

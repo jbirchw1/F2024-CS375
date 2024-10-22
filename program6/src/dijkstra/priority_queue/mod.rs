@@ -57,7 +57,6 @@ impl Vertex {
     }
 }
 
-// TODO: Reorder functions (once complete) by pub/priv
 // the impl block allows for object-oriented functionalty in Rust
 // allows us functionality like `Q.pop()`.
 impl PriorityQueue {
@@ -90,8 +89,6 @@ impl PriorityQueue {
         let index = self.heap.iter().position(|n| n.key == vertex);
         self.lookup_table.insert(vertex, index.unwrap());
         self.percolate_up(vertex);
-
-        println!("Exited IWP");
     }
 
     // Updates specified key with new distance and percolates up accordingly
@@ -123,11 +120,11 @@ impl PriorityQueue {
         // sift down
         self.sift_down(0);
 
-        for (key, value) in &self.lookup_table {
-            println!("{}: {}", key, value);
-        }
-
         Some(smallest)
+    }
+
+    pub fn contains_key(&self, key: i32) -> bool {
+        self.lookup_table.contains_key(&key)
     }
 
     // Swaps indices in heap and updates lookup table
@@ -140,34 +137,19 @@ impl PriorityQueue {
     // percolates up at the index with the specified key
     fn percolate_up(&mut self, key: i32) {
         let to_percolate = self.lookup_table.get(&key).copied().unwrap();
-        for (key, value) in &self.lookup_table {
-            println!("{}: {}", key, value);
-        }
-
-        println!("index to percolate = {}", to_percolate);
+    
         let mut index = to_percolate;
         while index > 0 {
             let parent = (index - 1) / 2;
-            println!("index now equals {}", index);
-            println!("value at index {} is {}", index, self.heap[index].key);
             if self.heap[index].distance < self.heap[parent].distance {
-                println!("swapping");
                 self.swap(index, parent);
             }
-            println!("value at the same index {} is now {}", index, self.heap[index].key);
             index = parent;
         }
-
-        for (key, value) in &self.lookup_table {
-            println!("{}: {}", key, value);
-        }
-
-        println!("Exited percolate up");
     }
 
     fn sift_down(&mut self, mut index: usize) {
         let to_sift = self.heap[index].key;
-        println!("value to sift = {} at index {}", to_sift, index);
         while ((index * 2) + 1) <= self.length() - 1 {
             let left = (2 * index) + 1;
             let right = (2 * index) + 2;
