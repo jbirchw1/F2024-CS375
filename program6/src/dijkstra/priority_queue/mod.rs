@@ -101,7 +101,7 @@ impl PriorityQueue {
         self.percolate_up(vertex);
     }
 
-    /// Updates specified key with new distance and percolates up accordingly
+    /// Updates specified key with new distance and percolates up accordingly.
     /// Operates in O(logV) as a result of the call to percolate_up().
     pub fn relax(&mut self, key: i32, new_distance: f64) {
         let to_percolate = self.lookup_table.get(&key).copied();

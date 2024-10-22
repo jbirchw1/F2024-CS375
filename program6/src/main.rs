@@ -1,6 +1,7 @@
 #![warn(missing_docs)]
 
 //! Binghamton University - Fall 2024 Design and Analysis of Algorithms
+//! 
 //! Program 6: Dijkstra's Algorithm - John Birchwood
 //! 
 //! Please click any modules/functions to read more.

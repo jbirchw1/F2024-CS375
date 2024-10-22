@@ -9,3 +9,9 @@ Program to take unsorted input and output the same values in sorted order, using
 
 ## Program 3 - Heap Sort
 Program to take unsorted input and output the same values in sorted order, using heaps. The module includes other associated heap-building functionality. 
+
+## Program 4 - Binary Search Tree
+
+## Program 5 - Breadth First Search
+
+## Program 6 - Dijkstra's Algorithm
