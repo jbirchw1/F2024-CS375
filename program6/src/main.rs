@@ -1,3 +1,19 @@
+#![warn(missing_docs)]
+
+//! Binghamton University - Fall 2024 Design and Analysis of Algorithms
+//! Program 6: Dijkstra's Algorithm - John Birchwood
+//! 
+//! 
+//! 
+//! 
+//! 
+//! 
+//! 
+//! 
+//! 
+//! 
+
+
 /**
  * John Birchwood, bone fide Rustacean
  * jbirchw1@binghamton.edu
@@ -5,10 +21,7 @@
  */
 
 use std::env;
-
 mod dijkstra;
-
-// TODO: heap, indices of vertices in hashmap, adjust BFS, make helper function to
 
 /**
  * Function to get the start and end vertices from the command line
@@ -39,6 +52,6 @@ fn parse_args() -> (i32, i32) {
 
 fn main() {
     let (start, end) = parse_args();
-    let my_graph = dijkstra::build_graph_from_stdin();
+    let my_graph = dijkstra::build_weighted_directed_graph_from_stdin();
     dijkstra::print_shortest_path(start, end, &my_graph);
 }
