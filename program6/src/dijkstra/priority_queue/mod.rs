@@ -1,12 +1,31 @@
-// module for the priority queue
+//! Module for the PriorityQueue structs and implementations.
+//! Also contains the Vertex struct and implementations.
+//! 
+//! Though the functionality here is entirely contained within the Dijkstra 
+//! module, it may be easily expanded via a lib.rs file into much more portable code,
+//! were the need ever to arise.
+
 use std::collections::{HashMap};
 use std::cmp::Ordering;
 
+/// Struct for vertices.
+/// 
+/// The PriorityQueue binary min heap is constructed using this 
+/// struct to aid in comparisons and manipulation, instead of worrying
+/// about some tuple.
 pub struct Vertex {
     key: i32,
     distance: f64,
 }
 
+/// Struct for the priority queue.
+/// 
+/// Uses a min-heap for O(logV) removal of highest priority element.
+/// Keeps an auxillary lookup table with a HashMap representation for
+/// O(logV) relaxation of edges.
+/// 
+/// The min heap is ordered by giving highest priority to the vertex with
+/// the shortest distance. 
 pub struct PriorityQueue {
     heap: Vec<Vertex>,
     lookup_table: HashMap<i32, usize>,
@@ -34,6 +53,7 @@ impl PartialEq for Vertex {
 impl Eq for Vertex { }
 
 impl Vertex {
+    /// Creates new Vertex with vertex key k and distance d.
     pub fn new_with_priority(k: i32, d: f64) -> Self {
         Self{
             key: k,
@@ -41,10 +61,12 @@ impl Vertex {
         }
     }
 
+    /// Returns the key of itself.
     pub fn get_key(&self) -> i32 {
         self.key
     }
 
+    /// Returns the distance of itself.
     pub fn get_distance(&self) -> f64 {
         self.distance
     }
@@ -53,6 +75,7 @@ impl Vertex {
 // the impl block allows for object-oriented functionalty in Rust
 // allows us functionality like `Q.pop()`.
 impl PriorityQueue {
+    /// Creates a new PriorityQueue struct.
     pub fn new() -> Self {
         let vec: Vec<Vertex> = Vec::new();
         let hm: HashMap<i32, usize> = HashMap::new();
@@ -62,11 +85,14 @@ impl PriorityQueue {
         }
     }
 
-    // returns length of pq
+    /// Returns the length of the PriorityQueue's heap structure.
+    /// Operates in O(1) time.
     pub fn length(&self) -> usize {
         self.heap.len()
     }
 
+    /// Adds a Vertex to the PriorityQueue with the specified key and distance.
+    /// Operates in O(logV) time as a result of the call to percolate_up().
     pub fn insert_with_priority(&mut self, vertex: i32, weight: f64) {
         let v = Vertex::new_with_priority(vertex, weight);
         self.heap.push(v);
@@ -75,7 +101,8 @@ impl PriorityQueue {
         self.percolate_up(vertex);
     }
 
-    // Updates specified key with new distance and percolates up accordingly
+    /// Updates specified key with new distance and percolates up accordingly
+    /// Operates in O(logV) as a result of the call to percolate_up().
     pub fn relax(&mut self, key: i32, new_distance: f64) {
         let to_percolate = self.lookup_table.get(&key).copied();
         if let Some(v) = to_percolate {
@@ -85,6 +112,9 @@ impl PriorityQueue {
         else { return; }       
     } 
 
+    /// Removes the closest vertex from the PriorityQueue
+    /// and updates the heap/lookup table.
+    /// Operates in O(logV) time.
     pub fn pop(&mut self) -> Option<Vertex> {
         // panic if heap is empty
         if !(self.length() > 0) {
@@ -107,18 +137,24 @@ impl PriorityQueue {
         Some(smallest)
     }
 
+    /// Function to check if the heap contains the specified key.
+    /// Operates in O(1) time.
     pub fn contains_key(&self, key: i32) -> bool {
         self.lookup_table.contains_key(&key)
     }
 
-    // Swaps indices in heap and updates lookup table
+    /// Swaps indices in heap and updates lookup table
+    /// Operates in O(1) time.
     fn swap(&mut self, index1: usize, index2: usize) {
         self.heap.swap(index1, index2);
         self.lookup_table.insert(self.heap[index1].key, index1);
         self.lookup_table.insert(self.heap[index2].key, index2);
     }
 
-    // percolates up at the index with the specified key
+    /// Percolates up at the index with the specified key.
+    /// 
+    /// Note that the lookup table is crucial in this operation.
+    /// Operates in O(logV) time.
     fn percolate_up(&mut self, key: i32) {
         let to_percolate = self.lookup_table.get(&key).copied().unwrap();
     
@@ -132,6 +168,8 @@ impl PriorityQueue {
         }
     }
 
+    /// Sifts down at the index with the specified key.
+    /// Operates in O(logV) time.
     fn sift_down(&mut self, mut index: usize) {
         while ((index * 2) + 1) <= self.length() - 1 {
             let left = (2 * index) + 1;

@@ -1,4 +1,6 @@
-// module for disktra's shortest path algorithm
+//! Module for Dijkstra's shortest path algorithm.
+//! Contains the priority_queue module as well. See this module
+//! for further details on time complexity for the Dijkstra's Algorithm.
 
 use std::collections::{HashMap};
 use std::io::{self, BufRead};
@@ -19,6 +21,10 @@ mod priority_queue;
 /// 
 /// let my_graph = dijkstra::build_weighted_directed_graph_from_stdin();
 /// ```
+/// 
+/// # Time Complexity
+/// <div class="warning">This function operates in 
+/// O(V) time complexity.</div>
 pub fn build_weighted_directed_graph_from_stdin() -> HashMap<i32, Vec<(i32, f64)>> {
     let mut graph: HashMap<i32, Vec<(i32, f64)>> = HashMap::new();
     let stdin = io::stdin();
@@ -64,6 +70,12 @@ pub fn build_weighted_directed_graph_from_stdin() -> HashMap<i32, Vec<(i32, f64)
 /// let my_graph = dijkstra::build_weighted_directed_graph_from_stdin();
 /// dijkstra::print_shortest_path(source, destination, &my_graph);
 /// ```
+/// 
+/// # Time Complexity
+/// <div class="warning">This function operates in 
+/// O(VlogV) time complexity.</div>
+/// Note that this is only due to the call to dijkstra(). 
+/// Otherwise, the function operates in O(V) time.
 pub fn print_shortest_path(
     start: i32,
     destination: i32,
@@ -123,6 +135,10 @@ pub fn print_shortest_path(
 /// let my_graph = dijkstra::build_weighted_directed_graph_from_stdin();
 /// let distances, predecessors = dijkstra::dijkstra(&my_graph, source);
 /// ``` 
+/// 
+/// # Time Complexity
+/// <div class="warning">This function operates in 
+/// O(VlogV) time complexity.</div>
 pub fn dijkstra(
     graph: &HashMap<i32, 
     Vec<(i32, f64)>>, 
