@@ -4,14 +4,8 @@ use std::collections::{HashMap};
 use std::io::{self, BufRead};
 mod priority_queue;
 
-pub fn print_graph(graph: &HashMap<i32, Vec<(i32, f64)>>) {
-    println!("adjacency list for each edge:");
-    for (node, neighbors) in graph {
-        println!("{}: {:?}", node, neighbors);
-    }
-}
-
 // TODO: build helper function to get rid of potential duplicate edges
+// -> not strictly neccessary, but can help cut down on runtime 
 pub fn build_graph_from_stdin() -> HashMap<i32, Vec<(i32, f64)>> {
     let mut graph: HashMap<i32, Vec<(i32, f64)>> = HashMap::new();
     let stdin = io::stdin();
@@ -29,7 +23,6 @@ pub fn build_graph_from_stdin() -> HashMap<i32, Vec<(i32, f64)>> {
         // if u exists in the hash map, insert v into its' vector
         // if not, create u and then add v
         graph.entry(u).or_insert_with(Vec::new).push((v, dist));
-        // graph.entry(u).or_insert_with(Vec::new).push((priority_queue::Vertex::new_with_priority(v, dist)));
     }
 
     graph // Return ownership of the graph
@@ -38,8 +31,7 @@ pub fn build_graph_from_stdin() -> HashMap<i32, Vec<(i32, f64)>> {
 pub fn print_shortest_path(
     start: i32,
     destination: i32,
-    graph: &HashMap<i32, Vec<(i32, f64)>>) 
-{
+    graph: &HashMap<i32, Vec<(i32, f64)>> ) {
 
     let (distances, predecessors) = dijkstra(graph, start);
 
@@ -48,10 +40,29 @@ pub fn print_shortest_path(
         return;
     }
 
-    let mut stack = Vec::new();
-    stack.push_back(destination);
-    
+    let distance_to_destination = distances.get(&destination).copied().unwrap();
+    println!("Distance: {}", distance_to_destination);
 
+    let mut stack = Vec::new();
+    stack.push(destination);
+    let mut prior = predecessors.get(&destination).copied().unwrap(); 
+    loop {
+        stack.push(prior);
+        if prior == start {
+            break;
+        }
+        prior = predecessors.get(&prior).copied().unwrap(); 
+    }
+
+    while stack.len() > 0 {
+        let curr = stack.pop();
+        if stack.len() > 0 {
+            print!("{} -> ", curr.unwrap());
+        }
+        else {
+            println!("{}", curr.unwrap());
+        }
+    }
 }
 
 fn dijkstra(
@@ -68,7 +79,6 @@ fn dijkstra(
 
     // Initialize distances to infinity and start node to 0
     for &vertex in graph.keys() {
-        // println!("vertex = {}", &vertex);
         distances.insert(vertex, f64::INFINITY);
         pq.insert_with_priority(vertex, f64::INFINITY);
         // little hack-y, but allows you to add nodes that aren't nececcarily "u" in a directed edge
@@ -82,22 +92,14 @@ fn dijkstra(
     }
     distances.insert(start, 0.0);
 
-    // for d in &distances {
-    //     println!("{:?}", d);
-    // }
-
     pq.insert_with_priority(start, 0.0);  // Start node with distance 0
 
     while let Some(current) = pq.pop() {
         if let Some(neighbors) = graph.get(&current.get_key()) {
             for &neighbor in neighbors {
-                // println!("current access vertex = {}; neighbor = {:?}", current.get_key(), neighbor);
-                if distances.get(&neighbor.0).copied().unwrap() > current.get_distance() + &neighbor.1 {
-                    let prior = distances.get(&neighbor.0).copied().unwrap();
-                    let post = &current.get_distance() + &neighbor.1;
-
-                    // println!("{} is less than {}", post, prior);
-
+                let prior = distances.get(&neighbor.0).copied().unwrap();
+                let post = &current.get_distance() + &neighbor.1;
+                if prior > post {
                     distances.insert(neighbor.0, post);
                     predecessors.insert(neighbor.0, current.get_key());
                     if pq.contains_key(neighbor.0) {

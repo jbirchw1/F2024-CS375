@@ -34,13 +34,6 @@ impl PartialEq for Vertex {
 impl Eq for Vertex { }
 
 impl Vertex {
-    pub fn new(k: i32) -> Self {
-        Self{
-            key: k,
-            distance: f64::INFINITY,
-        }
-    }
-
     pub fn new_with_priority(k: i32, d: f64) -> Self {
         Self{
             key: k,
@@ -72,15 +65,6 @@ impl PriorityQueue {
     // returns length of pq
     pub fn length(&self) -> usize {
         self.heap.len()
-    }
-
-    pub fn insert(&mut self, vertex: i32) {
-        let v = Vertex::new(vertex);
-        // No need to percolate up, because when it is inserted into the back of the 
-        // heap it has distance infinity regardless
-        self.heap.push(v);
-        let index = self.heap.iter().position(|n| n.key == vertex);
-        self.lookup_table.insert(vertex, index.unwrap());
     }
 
     pub fn insert_with_priority(&mut self, vertex: i32, weight: f64) {
@@ -149,7 +133,6 @@ impl PriorityQueue {
     }
 
     fn sift_down(&mut self, mut index: usize) {
-        let to_sift = self.heap[index].key;
         while ((index * 2) + 1) <= self.length() - 1 {
             let left = (2 * index) + 1;
             let right = (2 * index) + 2;
