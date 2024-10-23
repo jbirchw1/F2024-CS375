@@ -1,5 +1,5 @@
-# Breadth First Search
-Here is my breadth-first search implementation in Rust. For instructions on how to use and compile, please take a look at program 2 [here](https://github.com/jbirchw1/F2024-CS375/tree/main/program2). 
+# Dijkstra's Algorithm
+Here is my Dijkstra's algorithm implementation in Rust. For instructions on how to use and compile, please take a look at program 2 [here](https://github.com/jbirchw1/F2024-CS375/tree/main/program2). 
 
 ## Input 
 Please provide all input in the form specified by the project instructions. Each input file should be of the following form:

@@ -14,7 +14,9 @@ use std::cmp::Ordering;
 /// struct to aid in comparisons and manipulation, instead of worrying
 /// about some tuple.
 pub struct Vertex {
+    /// Name of the vertex
     key: i32,
+    /// Distance to vertex. I.e., shortest discovered distance.
     distance: f64,
 }
 
@@ -27,7 +29,11 @@ pub struct Vertex {
 /// The min heap is ordered by giving highest priority to the vertex with
 /// the shortest distance. 
 pub struct PriorityQueue {
+    /// Min-heap representation of the priority queue. 
+    /// Allows for fast removal of the closest element.
     heap: Vec<Vertex>,
+    /// Auxillary lookup table to allow for fast access of elements 
+    /// in the middle of the queue.
     lookup_table: HashMap<i32, usize>,
 }
 
