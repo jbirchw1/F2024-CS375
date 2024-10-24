@@ -81,6 +81,14 @@ pub fn print_shortest_path(
     destination: i32,
     graph: &HashMap<i32, Vec<(i32, f64)>> ) {
 
+    // take care of the O(1) case in which the start and end 
+    // vertices are the same.
+    if start == destination {
+        println!("Distance: 0");
+        println!("{}", start);
+        return;
+    }
+
     // get distances and predeccessors from dijkstra's algorithm
     let (distances, predecessors) = dijkstra(graph, start);
 
