@@ -13,7 +13,7 @@ where x, y are the number of vertices and edges in the graph, respectively. Each
 
 Please pass the source and destination vetices on the command line as arguments and pass the input file from stdin/file redirection. i.e., the command line should look something like
 
-`./program6 0 3 < input.txt`,
+`./dijkstra 0 3 < input.txt`,
 
 where 0 is the source, 3 is the destination, and `input.txt` contains the graph edges. Alternatively, you can pass it all from the cargo run like so:
 
