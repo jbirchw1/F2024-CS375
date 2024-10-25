@@ -114,15 +114,12 @@ pub fn print_shortest_path(
         prior = predecessors.get(&prior).copied().unwrap(); 
     }
 
+    print!("Path:  ");
     while stack.len() > 0 {
         let curr = stack.pop();
-        if stack.len() > 0 {
-            print!("{} -> ", curr.unwrap());
-        }
-        else {
-            println!("{}", curr.unwrap());
-        }
+        print!("{} ", curr.unwrap());
     }
+    println!("");
 }
 
 /// Dijkstra's algorithm for all shortest paths from a start vertex.
