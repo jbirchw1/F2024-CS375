@@ -85,7 +85,7 @@ pub fn print_shortest_path(
     // vertices are the same.
     if start == destination {
         println!("Distance: 0");
-        println!("{}", start);
+        println!("Path:  {}", start);
         return;
     }
 
