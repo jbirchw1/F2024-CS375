@@ -101,22 +101,12 @@ impl PriorityQueue {
     /// Operates in O(logV) time as a result of the call to percolate_up().
     pub fn insert_with_priority(&mut self, vertex: i32, weight: f64) {
         let v = Vertex::new_with_priority(vertex, weight);
+        println!("insert_with_priority vertex {}:{}", v.get_key(), v.get_distance());
         self.heap.push(v);
-        let index = self.heap.iter().position(|n| n.key == vertex);
-        self.lookup_table.insert(vertex, index.unwrap());
-        self.percolate_up(vertex);
+        let index = self.heap.len() - 1;
+        self.lookup_table.insert(vertex, index);
+        self.percolate_up(index);
     }
-
-    /// Updates specified key with new distance and percolates up accordingly.
-    /// Operates in O(logV) as a result of the call to percolate_up().
-    pub fn relax(&mut self, key: i32, new_distance: f64) {
-        let to_percolate = self.lookup_table.get(&key).copied();
-        if let Some(v) = to_percolate {
-            self.heap[v].distance = new_distance;
-            self.percolate_up(key);
-        }
-        else { return; }       
-    } 
 
     /// Removes the closest vertex from the PriorityQueue
     /// and updates the heap/lookup table.
@@ -143,12 +133,6 @@ impl PriorityQueue {
         Some(smallest)
     }
 
-    /// Function to check if the heap contains the specified key.
-    /// Operates in O(1) time.
-    pub fn contains_key(&self, key: i32) -> bool {
-        self.lookup_table.contains_key(&key)
-    }
-
     /// Swaps indices in heap and updates lookup table
     /// Operates in O(1) time.
     fn swap(&mut self, index1: usize, index2: usize) {
@@ -161,10 +145,9 @@ impl PriorityQueue {
     /// 
     /// Note that the lookup table is crucial in this operation.
     /// Operates in O(logV) time.
-    fn percolate_up(&mut self, key: i32) {
-        let to_percolate = self.lookup_table.get(&key).copied().unwrap();
-    
-        let mut index = to_percolate;
+    fn percolate_up(&mut self, mut index: usize) {
+        println!("percolating up verte {}", self.heap[index].key);
+
         while index > 0 {
             let parent = (index - 1) / 2;
             if self.heap[index].distance < self.heap[parent].distance {
@@ -172,6 +155,8 @@ impl PriorityQueue {
             }
             index = parent;
         }
+
+        println!("vertex {}:{} now exists at index {}", self.heap[index].key, self.heap[index].distance, index);
     }
 
     /// Sifts down at the index with the specified key.

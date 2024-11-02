@@ -25,12 +25,17 @@ mod priority_queue;
 /// # Time Complexity
 /// <div class="warning">This function operates in 
 /// O(V) time complexity.</div>
-pub fn build_weighted_undirected_graph_from_stdin() -> HashMap<i32, Vec<(i32, f64)>> {
+pub fn build_weighted_undirected_graph_from_stdin() -> (HashMap<i32, Vec<(i32, f64)>>, i32) {
     let mut graph: HashMap<i32, Vec<(i32, f64)>> = HashMap::new();
     let stdin = io::stdin();
 
+    let line1 = stdin.lock().lines().next().unwrap().unwrap();
+    let mut sizes = line1.split_whitespace();
+    let num_vertices: i32 = sizes.next().unwrap().parse().unwrap();
+    let _num_edges: i32 = sizes.next().unwrap().parse().unwrap();
+
     // Read each line of input
-    for line in stdin.lock().lines().skip(1) {
+    for line in stdin.lock().lines() {
         let input = line.unwrap();
 
         // Parse the edge
@@ -43,28 +48,30 @@ pub fn build_weighted_undirected_graph_from_stdin() -> HashMap<i32, Vec<(i32, f6
         // if not, create u and then add v
         graph.entry(u).or_insert_with(Vec::new).push((v, dist));
         // also, add the opposite edge
-        // graph.entry(v).or_insert_with(Vec::new).push((u, dist));
+        graph.entry(v).or_insert_with(Vec::new).push((u, dist));
     }
 
-    graph // Return ownership of the graph
+    (graph, num_vertices) // Return ownership of the graph
 }
 
 pub fn determine_minimum_spanning_tree_cost(
-    graph: &HashMap<i32, Vec<(i32, f64)>> ) {
+    graph: &HashMap<i32, Vec<(i32, f64)>>,
+    num_vertices: i32) {
 
     // get distances and predeccessors from Prim's algorithm
-    let minimum_spanning_tree = prim(graph);
+    let minimum_spanning_tree = prim(graph, num_vertices);
 
     let mut total_distance : f64 = 0.0;
-    for (key, value) in minimum_spanning_tree {
-        println!("{} / {}", key, value);
+    for (_key, value) in minimum_spanning_tree {
+        println!("{}:{}", _key, value);
         total_distance += value;
     }
+    println!("Total Length: {}", total_distance);
 }
 
 pub fn prim(
-    graph: &HashMap<i32, Vec<(i32, f64)>>
-) -> HashMap<i32, f64> {
+    graph: &HashMap<i32, Vec<(i32, f64)>>,
+    num_vertices: i32 ) -> HashMap<i32, f64> {
     let mut mst: HashMap<i32, f64> = HashMap::new();  // Minimum edge weight to the MST
     let mut pq = priority_queue::PriorityQueue::new();  // Priority queue to select the next minimum edge
 
@@ -75,16 +82,19 @@ pub fn prim(
 
     // THIS is Dijkstra's algorithm
     // pop lowest distance off priority queue
-    // TODO: Update loop to stop when MST contains same amount of vertices as graph (not in terms of edges, that is)
-    while let Some(current) = pq.pop() {
+    while mst.len() < num_vertices.try_into().unwrap() {
+        let current = if let Some(current) = pq.pop() { current } else { return mst; };
         // add current to mst
+        println!("Current = {}:{}", current.get_key(), current.get_distance());
         mst.insert(current.get_key(), current.get_distance());
         // iterate through each neighbor, if it exists
         if let Some(neighbors) = graph.get(&current.get_key()) {
             for &neighbor in neighbors {
+                println!("Considering adding neighbor: {}:{}", &neighbor.0, &neighbor.1);
                 if !mst.contains_key(&neighbor.0) {
                     // if the mst does not yet contain the vertex associated with the tail end of the edge
                     // add it to the priority queue
+                    println!("Inserting neighbor: {}:{}", &neighbor.0, &neighbor.1);
                     pq.insert_with_priority(neighbor.0, neighbor.1);
                 }
             }

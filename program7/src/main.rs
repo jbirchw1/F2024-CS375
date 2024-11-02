@@ -13,7 +13,6 @@
  * Program 7 - Prim's Algorithm
  */
 
-use std::env;
 mod prim;
 
 
@@ -27,7 +26,7 @@ mod prim;
 
 /// Driver code
 fn main() {
-    let my_graph = prim::build_weighted_undirected_graph_from_stdin();
-    prim::determine_minimum_spanning_tree_cost(&my_graph);
+    let (my_graph, num_vertices) = prim::build_weighted_undirected_graph_from_stdin();
+    prim::determine_minimum_spanning_tree_cost(&my_graph, num_vertices);
     
 }
