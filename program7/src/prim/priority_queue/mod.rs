@@ -101,7 +101,6 @@ impl PriorityQueue {
     /// Operates in O(logV) time as a result of the call to percolate_up().
     pub fn insert_with_priority(&mut self, vertex: i32, weight: f64) {
         let v = Vertex::new_with_priority(vertex, weight);
-        println!("insert_with_priority vertex {}:{}", v.get_key(), v.get_distance());
         self.heap.push(v);
         let index = self.heap.len() - 1;
         self.lookup_table.insert(vertex, index);
@@ -146,8 +145,6 @@ impl PriorityQueue {
     /// Note that the lookup table is crucial in this operation.
     /// Operates in O(logV) time.
     fn percolate_up(&mut self, mut index: usize) {
-        println!("percolating up verte {}", self.heap[index].key);
-
         while index > 0 {
             let parent = (index - 1) / 2;
             if self.heap[index].distance < self.heap[parent].distance {
@@ -155,8 +152,6 @@ impl PriorityQueue {
             }
             index = parent;
         }
-
-        println!("vertex {}:{} now exists at index {}", self.heap[index].key, self.heap[index].distance, index);
     }
 
     /// Sifts down at the index with the specified key.

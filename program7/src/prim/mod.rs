@@ -63,10 +63,9 @@ pub fn determine_minimum_spanning_tree_cost(
 
     let mut total_distance : f64 = 0.0;
     for (_key, value) in minimum_spanning_tree {
-        println!("{}:{}", _key, value);
         total_distance += value;
     }
-    println!("Total Length: {}", total_distance);
+    println!("{}", total_distance);
 }
 
 pub fn prim(
@@ -85,16 +84,13 @@ pub fn prim(
     while mst.len() < num_vertices.try_into().unwrap() {
         let current = if let Some(current) = pq.pop() { current } else { return mst; };
         // add current to mst
-        println!("Current = {}:{}", current.get_key(), current.get_distance());
         mst.insert(current.get_key(), current.get_distance());
         // iterate through each neighbor, if it exists
         if let Some(neighbors) = graph.get(&current.get_key()) {
             for &neighbor in neighbors {
-                println!("Considering adding neighbor: {}:{}", &neighbor.0, &neighbor.1);
                 if !mst.contains_key(&neighbor.0) {
                     // if the mst does not yet contain the vertex associated with the tail end of the edge
                     // add it to the priority queue
-                    println!("Inserting neighbor: {}:{}", &neighbor.0, &neighbor.1);
                     pq.insert_with_priority(neighbor.0, neighbor.1);
                 }
             }
