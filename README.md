@@ -15,3 +15,8 @@ Program to take unsorted input and output the same values in sorted order, using
 ## Program 5 - Breadth First Search
 
 ## Program 6 - Dijkstra's Algorithm
+
+## Program 7 - Prim's Algorithm
+
+## Program 8 - Longest Common Substring
+
