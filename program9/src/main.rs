@@ -5,6 +5,7 @@
 use std::io::{self, BufRead};
 mod knapsack;
 
+// Get all items and associated values + weights
 fn build_input() -> (Vec<u32>, Vec<u32>, u32) {
     let mut values = Vec::new();
     let mut weights = Vec::new();
@@ -28,13 +29,10 @@ fn build_input() -> (Vec<u32>, Vec<u32>, u32) {
         weights.push(w);
     }
 
-
     return (values, weights, max_weight);
 }
 
 fn main() {
     let (values, weights, max_weight) = build_input();
-    println!("{:?}", values);
-    println!("{:?}", weights);
-    println!("{}", max_weight);
+    knapsack::determine_and_print_loot(max_weight, values, weights);
 }
