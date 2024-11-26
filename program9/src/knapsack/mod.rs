@@ -1,6 +1,7 @@
 //! module for the knapsack program w/ memoization
 
 // TODO: Add comments
+// TODO: cargo fmt and cargo clippy
 
 use std::cmp::max;
 
